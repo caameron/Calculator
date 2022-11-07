@@ -80,6 +80,7 @@ function allClear() {
     topScreenDisplay.innerHTML = '';
     mainScreenDisplayText = '';
     mainScreenDisplay.innerHTML = '';
+    rightNumberDisplay = '';
 }
 
 function clearScreen() {
