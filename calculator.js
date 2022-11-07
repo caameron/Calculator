@@ -6,12 +6,16 @@ let leftNumber = null;
 let rightNumber = null;
 let rightNumberDisplay = "";
 let lastOperatorChosen = '';
+let isLastOperatorEquals = false;
 
 const numberButtons = Array.from(document.querySelectorAll('.number'));
 numberButtons.forEach(number => number.addEventListener('click', () => displayNumberOnScreen(number.innerHTML)));
 
 const operatorButtons = Array.from(document.querySelectorAll('.operator'));
 operatorButtons.forEach(operator => operator.addEventListener('click', () => operatorSelected(operator.innerHTML)));
+
+document.getElementById("acButton").addEventListener('click', () => allClear());
+document.getElementById("clearButton").addEventListener('click', () => clearScreen());
 
 function displayNumberOnScreen(number) {
     if(leftNumber !== null){
@@ -27,14 +31,29 @@ function operatorSelected(operator) {
         leftNumber =  parseInt(topScreenDisplayText);
         displayOperatorOnScreen(operator);
     }
+    else if(operator === '=') {
+        rightNumber = parseInt(rightNumberDisplay);
+        leftNumber =  Calculate(lastOperatorChosen, leftNumber, rightNumber);
+        EqualSelected(leftNumber);
+        isLastOperatorEquals = true;
+    }
+    else if(isLastOperatorEquals) {
+        topScreenDisplayText = '';
+        topScreenDisplay.innerHTML = '';
+        rightNumber = null;
+        rightNumberDisplay = '';
+        let numberToDisplay = leftNumber;
+        leftNumber = null;
+        displayNumberOnScreen(numberToDisplay);
+        displayOperatorOnScreen(operator);
+        leftNumber = numberToDisplay;
+    }
     else {
         rightNumber = parseInt(rightNumberDisplay);
         rightNumberDisplay = '';
         leftNumber =  Calculate(lastOperatorChosen, leftNumber, rightNumber);
-        if(operator === '=') { return EqualSelected(leftNumber);}
         mainScreenDisplayText = leftNumber;
         mainScreenDisplay.innerHTML = mainScreenDisplayText;
-        topScreenDisplay.innerHTML = '';
         topScreenDisplay.innerHTML = mainScreenDisplayText;
         topScreenDisplayText = mainScreenDisplayText;
         displayOperatorOnScreen(operator);
@@ -46,11 +65,26 @@ function operatorSelected(operator) {
 function EqualSelected(calculatedValue) {
     mainScreenDisplayText = calculatedValue;
     mainScreenDisplay.innerHTML = mainScreenDisplayText;
+    mainScreenDisplayText = leftNumber;
 }
 
 function displayOperatorOnScreen(operator) {
     topScreenDisplayText += ' ' + operator + ' ';
     topScreenDisplay.innerHTML = topScreenDisplayText;
+}
+
+function allClear() {
+    leftNumber = null;
+    rightNumber = null;
+    topScreenDisplayText = '';
+    topScreenDisplay.innerHTML = '';
+    mainScreenDisplayText = '';
+    mainScreenDisplay.innerHTML = '';
+}
+
+function clearScreen() {
+    topScreenDisplayText = '';
+    topScreenDisplay.innerHTML = '';
 }
 
 //Operator Functions
